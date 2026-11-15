@@ -1,0 +1,72 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "env-var-manager-pro"
+version = "1.2.0"
+description = "Gestor profesional de variables de entorno y almacén nativo seguro de credenciales (Keyring) para Windows, macOS y Linux."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [
+    { name = "Francisco Grandón Vergara", email = "grandonpanxo@gmail.com" }
+]
+keywords = [
+    "environment-variables",
+    "keyring",
+    "secrets-management",
+    "security",
+    "windows-credential-manager",
+    "fernet",
+    "pbkdf2",
+    "backup-encryption",
+    "cli",
+    "gui"
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security :: Cryptography",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Systems Administration"
+]
+dependencies = [
+    "customtkinter>=5.2.2",
+    "cryptography>=42.0.0",
+    "keyring>=25.0.0",
+    "pywin32>=306; sys_platform == 'win32'"
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=8.0.0"
+]
+
+[project.scripts]
+keyring-secrets = "keyring_secrets_cli:main"
+keyring-secrets-gui = "keyring_secrets_gui:main"
+envvar-manager = "src.main:main"
+
+[project.urls]
+"Homepage" = "https://github.com/FranciscoGrandon/env-var-manager-pro"
+"Bug Tracker" = "https://github.com/FranciscoGrandon/env-var-manager-pro/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*", "src.core*", "src.gui*", "src.utils*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]

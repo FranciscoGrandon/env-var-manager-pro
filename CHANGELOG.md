@@ -7,6 +7,11 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 
 Creado por Francisco Grandón Vergara
 
+## [Unreleased]
+
+### Añadido
+- Guía de integración automática en `README.md` para agentes de IA y equipos de desarrollo, incluyendo plantilla de directiva global (`AGENTS.md`, `GEMINI.md`, `CLAUDE.md`, `.cursorrules`) y plantilla de Agent Skill (`SKILL.md`).
+
 ## [1.2.0] - 2026-11-15
 
 ### Añadido

@@ -204,6 +204,70 @@ python keyring_secrets_gui.py
 
 ---
 
+## 🤖 Integración Automática en Flujos de IA y Equipos (Directiva Global y Agent Skill)
+
+Para que tus asistentes de IA (Antigravity, Claude Code, Cursor, Gemini CLI, Codex, etc.) utilicen **EnvVar Manager Pro** de forma automática y nunca escriban credenciales en texto plano, puedes configurar una regla global o una Agent Skill reutilizable.
+
+### Opción A — Directiva Global / Regla de Proyecto
+
+Copia y pega este bloque en tu archivo de instrucciones (`AGENTS.md`, `GEMINI.md`, `CLAUDE.md` o `.cursorrules`):
+
+```markdown
+## Gestión Obligatoria de Secretos y Credenciales (Keyring)
+
+- **Prohibición de texto plano:** Queda estrictamente prohibido almacenar tokens, API keys, contraseñas o secretos en archivos `.env`, JSON/YAML, scripts o código fuente.
+- **CLI obligatorio (`keyring-secrets` / `python keyring_secrets_cli.py`):**
+  - Usa siempre `--json` para obtener salidas estructuradas y deterministas.
+  - Usa `--stdin` en `set` y `update` para inyectar secretos por tubería sin dejar rastro en el historial ni en los argumentos del proceso.
+  - Usa `--no-reveal` en `get` (o el comando `exists`) cuando solo necesites verificar disponibilidad o metadatos sin exponer el valor en logs.
+- **SDK en Python:** En aplicaciones y scripts Python, lee credenciales exclusivamente mediante `envvar_manager_client.get_secret("<NOMBRE>")` (o `get_secret_safe("<NOMBRE>")`), nunca desde literales ni archivos `.env`.
+```
+
+### Opción B — Plantilla de Agent Skill (`SKILL.md`)
+
+Guarda esta plantilla en `~/.gemini/skills/keyring-secrets/SKILL.md` (o en `.agent/skills/keyring-secrets/SKILL.md` / `.claude/skills/keyring-secrets/SKILL.md` según tu herramienta):
+
+````markdown
+---
+name: keyring-secrets
+description: Gestiona y consume credenciales, tokens de API y contraseñas de forma segura mediante el almacén nativo del sistema operativo (Keyring) con EnvVar Manager Pro. Activar siempre que se requiera leer, guardar, actualizar, verificar o respaldar secretos sin escribir archivos .env ni exponer valores en texto plano.
+---
+
+# Gestión Segura de Secretos con EnvVar Manager Pro
+
+## Reglas Críticas
+1. Nunca almacenes secretos en `.env`, JSON, YAML o código fuente.
+2. Nunca muestres ni registres valores de secretos en logs o respuestas.
+3. Usa `--json` en todas las llamadas al CLI y `--stdin` al guardar o actualizar valores.
+
+## Comandos CLI (`keyring-secrets` o `python keyring_secrets_cli.py`)
+
+```bash
+# Verificar si existe un secreto o inspeccionar metadatos sin exponer el valor
+keyring-secrets exists NOMBRE_SECRETO --json
+keyring-secrets get NOMBRE_SECRETO --no-reveal --json
+
+# Guardar o actualizar un secreto de forma segura vía stdin
+printf '%s' "$VALOR" | keyring-secrets set NOMBRE_SECRETO --stdin --force --json
+printf '%s' "$NUEVO_VALOR" | keyring-secrets update NOMBRE_SECRETO --stdin --json
+
+# Listar nombres registrados y verificar backend activo
+keyring-secrets list --json
+keyring-secrets backend --json
+```
+
+## Uso en Scripts Python (`envvar_manager_client.py`)
+
+```python
+from envvar_manager_client import get_secret, get_secret_safe
+
+token = get_secret("GITHUB_TOKEN")
+api_key = get_secret_safe("OPENAI_API_KEY", default="", fallback_env=False)
+```
+````
+
+---
+
 ## 🧪 Ejecución de Tests
 
 Instala `pytest` (o `pip install -e ".[test]"`) y ejecuta la suite completa:
